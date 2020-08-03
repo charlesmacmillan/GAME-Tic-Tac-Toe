@@ -6,22 +6,29 @@
 
     <link rel="stylesheet" href="style.css" />
     <script defer src="main.js"></script>
-    <title>tic-tac-toe</title>
+    <title>TICK-tac-TOE</title>
   </head>
 
   <body>
+    <header>
+      <h1>TICK-tac-TOE</h1>
+      <p class="instructor">Player 1: Make your move</p>
+    </header>
     <main>
-        <section class="grid-container">
-            <div class="cell-1"></div>
-            <div class="cell-2"></div>
-            <div class="cell-3"></div>
-            <div class="cell-4"></div>
-            <div class="cell-5"></div>
-            <div class="cell-6"></div>
-            <div class="cell-7"></div>
-            <div class="cell-8"></div>
-            <div class="cell-9"></div>
-        </section>
+      <section class="container">
+        <div class="cell" id="cell-1"><p></p></div>
+        <div class="cell" id="cell-2"></div>
+        <div class="cell" id="cell-3"></div>
+        <div class="cell" id="cell-4"></div>
+        <div class="cell" id="cell-5"></div>
+        <div class="cell" id="cell-6"></div>
+        <div class="cell" id="cell-7"></div>
+        <div class="cell" id="cell-8"></div>
+        <div class="cell" id="cell-9"></div>
+      </section>
     </main>
+    <footer>
+      <button id="reset">RESET</button>
+    </footer>
   </body>
 </html>
