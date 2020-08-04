@@ -28,7 +28,6 @@ document.querySelector("section").addEventListener("click", clickPlay);
 document.querySelector("button").addEventListener("click", init);
 
 /*----- functions -----*/
-
 init();
 
 function clickPlay(e) {
