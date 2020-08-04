@@ -1,94 +1,81 @@
-/*------CONSTANT VARIABLES------*/
-const colors = {
-  players: [null, 1, -1],
-};
-const MAX_TOTAL_MOVES = 9;
-const WINNING_COMBOS = {
-  horizontal: [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9],
-  ],
-  vertical: [
-    [1, 4, 7],
-    [2, 5, 8],
-    [3, 6, 9],
-  ],
-  diagonal: [
-    [1, 5, 9],
-    [3, 5, 7],
-  ],
+/*----- constants -----*/
+const lookup = {
+  "1": "tick",
+  "-1": "toe",
+  null: "oh",
 };
 
-/*------STATE VARIABLES------*/
-let filledSpots = [];
-let playsMade = 1;
-let player1Moves = 0;
-let compMoves = 1;
-let compOptions = [
-  "#cell-1",
-  "#cell-2",
-  "#cell-3",
-  "#cell-4",
-  "#cell-5",
-  "#cell-6",
-  "#cell-7",
-  "#cell-8",
-  "#cell-9",
+const winningCombos = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
 ];
-/*------CACHED ELEMENT REFERENCES------*/
-const cellEls = document.querySelectorAll(".cell");
-const els = cellEls.forEach(function (n) {
-  return n.classList;
-});
-let pEl = document.querySelector("p");
-/*------EVENT LISTENERS------*/
 
-document.querySelector(".container").addEventListener("click", handleClick);
-document.querySelector("#reset").addEventListener("click", reset);
-/*------FUNCTIONS------*/
-//player moves
-function handleClick(e) {
-  console.log(e.target);
-  filledSpots.push(`#${e.target.id}`);
-  let hi = e.target;
-  hi.innerHTML =
-    '<img class="tick" src="https://i.imgur.com/OiNWUqV.png" alt="tick">';
+/*----- app's state (variables) -----*/
+let board, turn, winner;
+
+/*----- cached element references -----*/
+const squares = document.querySelectorAll("div");
+const message = document.querySelector("p");
+
+/*----- event listeners -----*/
+document.querySelector("section").addEventListener("click", clickPlay);
+document.querySelector("button").addEventListener("click", init);
+
+/*----- functions -----*/
+
+init();
+
+function clickPlay(e) {
+  if (e.target.id === "container") return;
+  // obtain index of square
+  const idx = parseInt(e.target.id.replace("cell", ""));
+  // check if square is available and return if not
+  if (board[idx] || winner) return;
+  // update state (board, turn, winner)
+  board[idx] = turn;
+  turn *= -1;
+  winner = getWinner();
   render();
 }
 
-function init() {
-  compChoose();
+function getWinner() {
+  for (let i = 0; i < winningCombos.length; i++) {
+    if (
+      Math.abs(
+        board[winningCombos[i][0]] +
+          board[winningCombos[i][1]] +
+          board[winningCombos[i][2]]
+      ) === 3
+    )
+      return board[winningCombos[i][0]];
+  }
+  if (board.includes(null)) return null;
+  return "T";
 }
-init();
-
+//updates all state variables
 function render() {
-  player1Moves += 1;
-  compMoves += 1;
-  playsMade += 1;
-  if (filledSpots.length === MAX_TOTAL_MOVES) {
-    return isCatsGame();
-  }
-  compChoose();
-}
-
-function compChoose() {
-  const rndIdx = Math.floor(Math.random() * compOptions.length);
-  console.log(rndIdx);
-  let x = compOptions[rndIdx];
-  if (filledSpots.includes(compOptions[rndIdx])) {
-    compChoose();
+  board.forEach(function (a, i) {
+    squares[i].removeAttribute("class");
+    squares[i].classList.add(`${lookup[a]}`);
+  });
+  if (winner === "T") {
+    message.innerHTML = "CATS GAME! Its a tie";
+  } else if (winner) {
+    message.innerHTML = `Congrats ${lookup[winner].toUpperCase()}, you win!`;
   } else {
-    let y = document.querySelector(x);
-    filledSpots.push(compOptions[rndIdx]);
-    y.innerHTML =
-      '<img class="toe" src="https://i.imgur.com/qlleP3J.png" alt="toe">';
+    message.innerHTML = `${lookup[turn].toUpperCase()}'s Turn`;
   }
 }
-function reset() {
-  window.location.reload();
-}
-
-function isCatsGame() {
-  pEl.innerText = "GAME OVER! It's a cat's game!";
+//initiates the start of a game
+function init() {
+  board = [null, null, null, null, null, null, null, null, null];
+  turn = 1;
+  winner = null;
+  render();
 }
