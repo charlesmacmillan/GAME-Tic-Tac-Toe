@@ -33,17 +33,14 @@ init();
 
 function clickPlay(e) {
   if (e.target.id === "container") return;
-  // obtain index of square
   const idx = parseInt(e.target.id.replace("cell", ""));
-  // check if square is available and return if not
   if (board[idx] || winner) return;
-  // update state (board, turn, winner)
   board[idx] = turn;
   turn *= -1;
   winner = getWinner();
   render();
 }
-
+//determines if there is a winning scenario, tie, or if the game needs to continue
 function getWinner() {
   for (let i = 0; i < winningCombos.length; i++) {
     if (
